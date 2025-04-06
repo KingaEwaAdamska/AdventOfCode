@@ -11,8 +11,8 @@ class Maze {
     private:
 
     struct Cell {
-        int x;
-        int y;
+        int col;
+        int row;
         int dir = 1;
         int cost;
         bool operator>(const Cell &other) const {
@@ -32,4 +32,5 @@ class Maze {
 
     public:
         Maze();
+        void show_results();
 };
