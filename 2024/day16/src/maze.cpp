@@ -89,8 +89,25 @@ int Maze::search_for_shortest_path() {
             tmp = lowestPoints[target_cell.x][target_cell.y][dir];
         }
     }
-    int x = target_cell.x;
-    int y = target_cell.y;
+    
+    // Nagłówki tabeli
+    std::cout << "-------------------- Tabela Lowest Points --------------------\n";
+    std::cout << "Row | Col | Value 1 | Value 2 | Value 3 | Value 4\n";
+    std::cout << "-------------------------------------------------------------\n";
+
+    // Wyświetlamy tabelę
+    for (int i = 1; i < maze_size-1; ++i) {
+        for (int j = 1; j < maze_size-1; ++j) {
+            if (!can_move_to(i,j))continue;
+            std::cout << std::setw(7) << i << " | " << std::setw(7) << j;  // Wyświetlanie numerów wiersza i kolumny
+            for (int k = 0; k < 4; ++k) {
+                std::cout << " | " << std::setw(12) << lowestPoints[i][j][k];  // Wyświetlanie wartości w kolumnach
+            }
+            std::cout << "\n";
+        }
+    }
+
+
 
     std::cout << tmp << std::endl;
     return tmp;
