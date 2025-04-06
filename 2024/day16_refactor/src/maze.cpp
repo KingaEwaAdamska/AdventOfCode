@@ -50,9 +50,6 @@ void Maze::search_for_shortest_path() {
     std::vector<std::vector<std::vector<int>>> lowestPoints(maze_size, std::vector<std::vector<int>>(maze_size, std::vector<int>(4,INT_MAX)));
     std::priority_queue<Cell, std::vector<Cell>, std::greater<Cell>> cellsToCheck;
 
-    // debug
-    std::vector<std::vector<Cell>> prevCell(maze_size, std::vector<Cell> (maze_size, {-1,-1,-1,-1}));
-
     cellsToCheck.push(current_cell);
     lowestPoints[current_cell.x][current_cell.y][0] = 1000;
     lowestPoints[current_cell.x][current_cell.y][1] = 0;
@@ -61,7 +58,6 @@ void Maze::search_for_shortest_path() {
 
     while (!cellsToCheck.empty()) {
         current_cell = cellsToCheck.top();
-        std::cout << "sprawdzam: " << current_cell.x << " " << current_cell.y << " " << lowestPoints[current_cell.x][current_cell.y][current_cell.dir] << std::endl;
         cellsToCheck.pop();
 
         for (int direction = 0; direction < 4; direction++) {
@@ -82,9 +78,7 @@ void Maze::search_for_shortest_path() {
 
             if (next_cell.cost < lowestPoints[next_cell.x][next_cell.y][next_cell.dir]) {
                 lowestPoints[next_cell.x][next_cell.y][next_cell.dir] = next_cell.cost;
-                prevCell[next_cell.x][next_cell.y] = current_cell;
                 cellsToCheck.push(next_cell);
-                std::cout << "dodano: " << next_cell.x << " " << next_cell.y << " " << next_cell.cost <<std::endl;
             }
         }
 
@@ -98,13 +92,6 @@ void Maze::search_for_shortest_path() {
     }
     int x = target_cell.x;
     int y = target_cell.y;
-    // while (prevCell[x][y].x != -1) {
-    //     std::cout << prevCell[x][y].x << " " << prevCell[x][y].y << std::endl;
-    //     x = prevCell[x][y].x;
-    //     y = prevCell[x][y].y;
-    // }
-    std::cout << prevCell[x][y].x << " " << prevCell[x][y].y << std::endl;
-    std::cout << prevCell[3][1].x << " " << prevCell[3][1].y << std::endl;
 
     std::cout << tmp << std::endl;
 }
