@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/ReindeerMaze.dir/link.d CMakeFiles/ReindeerMaze.dir/src/maze.cpp.o CMakeFiles/ReindeerMaze.dir/src/main.cpp.o -o ReindeerMaze

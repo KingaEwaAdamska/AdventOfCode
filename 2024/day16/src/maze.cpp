@@ -9,27 +9,25 @@ Maze::Maze() {
 
 void Maze::fill_maze() {
     std::string line;
-    std::getline(std::cin, line);  // Wczytuje całą linię tekstu
+    std::getline(std::cin, line);  // Read first line
     maze_size = line.size();
-    // std::cout << line << std::endl;
 
-    maze.resize(maze_size);  // Tworzy wektory w maze
+    maze.resize(maze_size);
     for (int i = 0; i < maze_size; i++) {
-        maze[i].resize(maze_size);  // Inicjuje wektory w każdym wierszu
+        maze[i].resize(maze_size);
         maze[0][i] = '#';
     }
 
-    for (int i = 1; i < maze_size; i++) {
+    for (int y = 1; y < maze_size; y++) {
         std::getline(std::cin, line);
-        // std::cout << line << std::endl;
-        for (int j = 0; j < maze_size; j++) {
-            maze[i][j] = line[j];
-            if (line[j] == 'E') { 
-                target_cell.x = i;
-                target_cell.y = j;
-            } else if (line[j] == 'S') { 
-                start_cell.x = i;
-                start_cell.y = j;
+        for (int x = 0; x < maze_size; x++) {
+            maze[y][x] = line[x];
+            if (line[x] == 'E') { 
+                target_cell.x = x;
+                target_cell.y = y;
+            } else if (line[x] == 'S') { 
+                start_cell.x = x;
+                start_cell.y = y;
             }
             
         }
@@ -38,81 +36,62 @@ void Maze::fill_maze() {
 
 
 bool Maze::can_move_to(int x, int y){
-    return maze[x][y] != '#';
+    return maze[y][x] != '#';
 }
 
-void Maze::search_for_shortest_path() {
-    const int dy[] = {0, 1, 0, -1};  // ↑ → ↓ ←
-    const int dx[] = {-1, 0, 1, 0};
+int Maze::search_for_shortest_path() {
 
+    int dx[] = {0, 1, 0, -1}; // up, right, down, left
+    int dy[] = {-1, 0, 1, 0}; 
+
+    Cell current_cell = start_cell;
+    Cell next_cell;
+    std::vector<std::vector<std::vector<int>>> lowestPoints(maze_size, std::vector<std::vector<int>>(maze_size, std::vector<int>(4,INT_MAX)));
     std::priority_queue<Cell, std::vector<Cell>, std::greater<Cell>> cellsToCheck;
-    std::vector<std::vector<int>> dist(maze_size, std::vector<int>(maze_size, INT_MAX));
-    std::vector<std::vector<int>> direction(maze_size, std::vector<int>(maze_size, INT_MAX));
-    std::vector<std::vector<std::pair<int, int>>> previousCell(maze_size, std::vector<std::pair<int, int>>(maze_size, {-1, -1}));
 
+    cellsToCheck.push(current_cell);
+    lowestPoints[current_cell.x][current_cell.y][0] = 1000;
+    lowestPoints[current_cell.x][current_cell.y][1] = 0;
+    lowestPoints[current_cell.x][current_cell.y][2] = 1000;
+    lowestPoints[current_cell.x][current_cell.y][3] = 2000;
 
-    int startDir = 1;
-
-    cellsToCheck.push({start_cell.x, start_cell.y, startDir, 0});
-    dist[start_cell.x][start_cell.y] = 0;
-
-    Cell current;
     while (!cellsToCheck.empty()) {
-        current = cellsToCheck.top();
+        current_cell = cellsToCheck.top();
         cellsToCheck.pop();
-        for (int dir = 0; dir < 4; dir++) {
-            int new_x = current.x + dx[dir];
-            int new_y = current.y + dy[dir];
-            int new_cost = current.cost;
-            if (!can_move_to(new_x,new_y)) continue;
+
+        for (int direction = 0; direction < 4; direction++) {
+            next_cell.x = current_cell.x + dx[direction];
+            next_cell.y = current_cell.y + dy[direction];
             
-            if (current.dir == dir) {
-                new_cost += 1;
-            }else if (std::abs(current.dir - dir ) == 1){
-                new_cost += 1001;
+            if (!can_move_to(next_cell.x, next_cell.y))continue;
+            next_cell.dir = direction;
+            
+
+            if (current_cell.dir == next_cell.dir) {
+                next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 1;
+            }else if (std::abs(current_cell.dir - next_cell.dir ) == 2){
+                next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 2001;
             } else {
-                new_cost += 2001;
+                next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 1001;
             }
 
-            if (new_cost < dist[new_x][new_y]){
-                dist[new_x][new_y] = new_cost;
-                direction[new_x][new_y] = dir;
-                cellsToCheck.push({new_x, new_y, dir, new_cost});
-        
-                previousCell[new_x][new_y] = {current.x,current.y};
-                // std::cout << current.dir << " " <<dir << std::endl;
-                std::cout << "Current x: " << current.x << " y: " << current.y << " " << current.cost << " " << current.dir << std::endl;
-                std::cout << "Next    x: " << new_x << " y: " << new_y << " " << new_cost << " " << dir << std::endl;
+            if (next_cell.cost < lowestPoints[next_cell.x][next_cell.y][next_cell.dir]) {
+                lowestPoints[next_cell.x][next_cell.y][next_cell.dir] = next_cell.cost;
+                cellsToCheck.push(next_cell);
             }
+        }
+
+    }
+
+    int tmp = INT_MAX;
+    for (int dir = 0; dir < 4; dir++) {
+        if (lowestPoints[target_cell.x][target_cell.y][dir] < tmp) {
+            tmp = lowestPoints[target_cell.x][target_cell.y][dir];
         }
     }
     int x = target_cell.x;
     int y = target_cell.y;
-    while (x != -1 && y != -1) {
-        maze[x][y] = 'X';
-        std::cout << x << " " << y << std::endl;
-        std::cout << "Prev" << previousCell[x][y].first << " " << previousCell[x][y].second << std::endl;
-        x = previousCell[x][y].first;
-        y = previousCell[x][y].second;
-        
-    } 
-    // std::cout << "[12][13]" << previousCell[12][13].first << " " << previousCell[12][13].second << std::endl;
-    // std::cout << "[13][13]" << previousCell[13][13].first << " " << previousCell[13][13].second << std::endl;
-    // std::cout << "[13][12]" << previousCell[13][12].first << " " << previousCell[13][12].second << std::endl;
 
-    // std::cout << "[3][13]" << previousCell[3][13].first << " " << previousCell[3][13].second << std::endl;
-    // std::cout << "[4][13]" << previousCell[4][13].first << " " << previousCell[4][13].second << std::endl;
-    // std::cout << "[5][13]" << previousCell[5][13].first << " " << previousCell[13][12].second << std::endl;
-    
-    std::cout << dist[target_cell.x][target_cell.y] << std::endl;
-    for (int i = 0; i < maze_size; i++){
-        for (int j = 0; j < maze_size; j++){
-            //std::cout << maze[i][j];
-           
-        }
-        std::cout << std::endl;
-    }
-
-    
-    return;
+    std::cout << tmp << std::endl;
+    return tmp;
 }
