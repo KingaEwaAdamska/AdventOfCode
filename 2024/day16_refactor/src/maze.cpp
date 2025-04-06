@@ -74,10 +74,10 @@ void Maze::search_for_shortest_path() {
 
             if (current_cell.dir == next_cell.dir) {
                 next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 1;
-            }else if (std::abs(current_cell.dir - next_cell.dir ) == 1){
-                next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 1001;
-            } else {
+            }else if (std::abs(current_cell.dir - next_cell.dir ) == 2){
                 next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 2001;
+            } else {
+                next_cell.cost = lowestPoints[current_cell.x][current_cell.y][current_cell.dir] + 1001;
             }
 
             if (next_cell.cost < lowestPoints[next_cell.x][next_cell.y][next_cell.dir]) {
