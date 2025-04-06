@@ -4,7 +4,8 @@
 #include <iostream>
 #include <queue>
 #include <climits>
-#include <iomanip> 
+#include <iomanip>
+#include <stack> 
 
 class Maze {
     private:
@@ -20,12 +21,14 @@ class Maze {
     };
 
         std::vector<std::vector<char>> maze;
+        std::vector<std::vector<std::vector<int>>> pointsValues;
         int maze_size;
         Cell start_cell;
         Cell target_cell;
         void fill_maze();
         bool can_move_to(int x, int y);
         int search_for_shortest_path();
+        int analyze_shortest_paths();
 
     public:
         Maze();

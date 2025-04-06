@@ -5,6 +5,7 @@
 Maze::Maze() {
     fill_maze();
     search_for_shortest_path();
+    analyze_shortest_paths();
 }
 
 void Maze::fill_maze() {
@@ -106,9 +107,90 @@ int Maze::search_for_shortest_path() {
             std::cout << "\n";
         }
     }
-
-
-
+    pointsValues = lowestPoints;
     std::cout << tmp << std::endl;
     return tmp;
+}
+
+int Maze::analyze_shortest_paths() {
+
+    int dx[] = {0, -1, 0, 1}; // up, right, down, left
+    int dy[] = {1, 0, -1, 0}; 
+    std::vector<std::vector<bool>> visited(maze_size, std::vector<bool>(maze_size, false));
+    
+    std::stack<std::pair<int,int>> toVisit;
+
+    
+    toVisit.push({target_cell.x,target_cell.y});
+
+    while (!toVisit.empty()){
+        std::pair<int,int> getValues = toVisit.top();
+        toVisit.pop();
+        int first_x = getValues.first;
+        int first_y = getValues.second;
+        int new_x;
+        int new_y;
+        
+        int tmp_points;
+
+        visited[first_x][first_y] = true;
+        int second_x;
+        int second_y;
+        int direction;
+        int direction_val = INT_MAX;
+    
+        for (int dir = 0; dir < 4; dir++) {
+            if (pointsValues[first_x][first_y][dir] < direction_val) {
+                direction_val = pointsValues[first_x][first_y][dir];
+                direction = dir;
+            }
+        }
+        second_x = first_x;
+        second_y = first_y;
+        first_x = second_x + dx[direction];
+        first_y = second_y + dy[direction];
+        visited[first_x][first_y] = true;
+
+        while (pointsValues[first_x][first_y][1] != 0) {
+            for (int dir = 0; dir < 4; dir++) {
+                new_x = first_x + dx[dir];
+                new_y = first_y + dy[dir];
+                if(!can_move_to(new_x,new_y))continue;
+                tmp_points = INT_MAX;
+                if (second_x == new_x || second_y == new_y) {
+                    tmp_points = pointsValues[first_x][first_y][dir];
+                }else {
+                    tmp_points = pointsValues[first_x][first_y][dir] + 1000;
+                }
+                // std::cout << "new " << new_x << " " << new_y << " second: " <<second_x << " " <<second_y << "punkty " << tmp_points<<std::endl;
+                if (tmp_points < direction_val) {
+                    direction_val = tmp_points;
+                    direction = dir;
+                } else if (tmp_points == direction_val && direction_val < INT_MAX) {
+                    toVisit.push({new_x, new_y});
+                    std::cout << "Dodano do sprawdzenia: " << new_x << " " << new_y << std::endl;
+                }
+            }
+            second_x = first_x;
+            second_y = first_y;
+            first_x = second_x + dx[direction];
+            first_y = second_y + dy[direction];
+            if (visited[first_x][first_y])break;
+            visited[first_x][first_y] = true;
+            std::cout << first_x << " " << first_y << std::endl;
+            
+        }
+    }
+    std::cout << "Podsumowanie\n";
+    int cnt = 0;
+    for (int i = 0; i < visited.size(); i++){
+        for (int j = 0; j <visited[i].size(); j++){
+            if(visited[i][j] == true){
+                std::cout << i << " " << j << std::endl;
+                cnt++;
+            }
+        }
+    }
+    std::cout << cnt << std::endl;
+    return 1;
 }

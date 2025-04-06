@@ -142,6 +142,7 @@ CMakeFiles/ReindeerMaze.dir/src/main.cpp.o: /home/visenna/Documents/AdventOfCode
   /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h \
   /usr/include/c++/14.2.1/bits/stl_pair.h \
   /usr/include/c++/14.2.1/bits/stl_queue.h \
+  /usr/include/c++/14.2.1/bits/stl_stack.h \
   /usr/include/c++/14.2.1/bits/stl_tempbuf.h \
   /usr/include/c++/14.2.1/bits/stl_uninitialized.h \
   /usr/include/c++/14.2.1/bits/stl_vector.h \
@@ -189,6 +190,7 @@ CMakeFiles/ReindeerMaze.dir/src/main.cpp.o: /home/visenna/Documents/AdventOfCode
   /usr/include/c++/14.2.1/pstl/pstl_config.h \
   /usr/include/c++/14.2.1/queue \
   /usr/include/c++/14.2.1/sstream \
+  /usr/include/c++/14.2.1/stack \
   /usr/include/c++/14.2.1/stdexcept \
   /usr/include/c++/14.2.1/streambuf \
   /usr/include/c++/14.2.1/string \
@@ -385,6 +387,7 @@ CMakeFiles/ReindeerMaze.dir/src/maze.cpp.o: /home/visenna/Documents/AdventOfCode
   /usr/include/c++/14.2.1/bits/stl_iterator_base_types.h \
   /usr/include/c++/14.2.1/bits/stl_pair.h \
   /usr/include/c++/14.2.1/bits/stl_queue.h \
+  /usr/include/c++/14.2.1/bits/stl_stack.h \
   /usr/include/c++/14.2.1/bits/stl_tempbuf.h \
   /usr/include/c++/14.2.1/bits/stl_uninitialized.h \
   /usr/include/c++/14.2.1/bits/stl_vector.h \
@@ -432,6 +435,7 @@ CMakeFiles/ReindeerMaze.dir/src/maze.cpp.o: /home/visenna/Documents/AdventOfCode
   /usr/include/c++/14.2.1/pstl/pstl_config.h \
   /usr/include/c++/14.2.1/queue \
   /usr/include/c++/14.2.1/sstream \
+  /usr/include/c++/14.2.1/stack \
   /usr/include/c++/14.2.1/stdexcept \
   /usr/include/c++/14.2.1/streambuf \
   /usr/include/c++/14.2.1/string \
@@ -514,6 +518,10 @@ CMakeFiles/ReindeerMaze.dir/src/main.cpp.o:
 /usr/lib/libmvec.so.1:
 
 /usr/lib/libm.so.6:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/lib/libc.so.6:
 
 /usr/include/c++/14.2.1/bits/requires_hosted.h:
 
@@ -761,10 +769,6 @@ CMakeFiles/ReindeerMaze.dir/src/main.cpp.o:
 
 /usr/include/c++/14.2.1/bits/exception.h:
 
-/usr/include/bits/setjmp.h:
-
-/usr/include/c++/14.2.1/bits/charconv.h:
-
 /usr/include/features.h:
 
 /usr/include/bits/sched.h:
@@ -825,11 +829,19 @@ CMakeFiles/ReindeerMaze.dir/src/main.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/libgcc.a:
 
+/usr/include/c++/14.2.1/bits/stl_stack.h:
+
 /usr/include/c++/14.2.1/bits/stl_tempbuf.h:
 
 /usr/include/c++/14.2.1/bits/stl_vector.h:
 
 /usr/include/c++/14.2.1/bits/streambuf.tcc:
+
+/usr/include/bits/setjmp.h:
+
+/usr/include/c++/14.2.1/bits/charconv.h:
+
+/usr/include/c++/14.2.1/stack:
 
 /usr/include/c++/14.2.1/bits/string_view.tcc:
 
@@ -1024,7 +1036,3 @@ CMakeFiles/ReindeerMaze.dir/src/main.cpp.o:
 /usr/lib/libm.so:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/crtendS.o:
-
-/usr/lib/libc.so.6:
-
-/usr/lib/libc_nonshared.a:
