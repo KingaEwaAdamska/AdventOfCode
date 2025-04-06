@@ -4,13 +4,11 @@
 
 Maze::Maze() {
     fill_maze();
-    search_for_shortest_path();
-    analyze_shortest_paths();
 }
 
 void Maze::show_results() {
-    std::cout << "Part A: " << search_for_shortest_path() << std::endl;
-    std::cout << "Part B: " << analyze_shortest_paths() << std::endl;
+    std::cout << "Part A: " << find_lowest_score() << std::endl;
+    std::cout << "Part B: " << find_best_sits() << std::endl;
 }
 
 void Maze::fill_maze() {
@@ -44,10 +42,17 @@ bool Maze::can_move_to(int row, int col){
     return maze[row][col] != '#';
 }
 
-int Maze::search_for_shortest_path() {
+int Maze::find_cost(int current_dir, int next_dir) {
+    if (current_dir == next_dir) {
+        return 1;
+    }else if (std::abs(current_dir - next_dir ) == 2){
+        return COST_DOUBLE_TURN + 1;
+    }else {
+        return COST_TURN + 1;
+    }
+}
 
-    int d_col[] = {0, 1, 0, -1}; // up, right, down, left
-    int d_row[] = {-1, 0, 1, 0}; 
+int Maze::find_lowest_score() {
 
     Cell current_cell = start_cell;
     Cell next_cell;
@@ -55,30 +60,21 @@ int Maze::search_for_shortest_path() {
     std::priority_queue<Cell, std::vector<Cell>, std::greater<Cell>> cellsToCheck;
 
     cellsToCheck.push(current_cell);
-    lowestPoints[current_cell.row][current_cell.col][0] = 1000;
     lowestPoints[current_cell.row][current_cell.col][1] = 0;
-    lowestPoints[current_cell.row][current_cell.col][2] = 1000;
-    lowestPoints[current_cell.row][current_cell.col][3] = 2000;
 
     while (!cellsToCheck.empty()) {
         current_cell = cellsToCheck.top();
         cellsToCheck.pop();
 
         for (int direction = 0; direction < 4; direction++) {
-            next_cell.col = current_cell.col + d_col[direction];
-            next_cell.row = current_cell.row + d_row[direction];
+            next_cell.col = current_cell.col + D_COL[direction];
+            next_cell.row = current_cell.row + D_ROW[direction];
             
             if (!can_move_to(next_cell.row, next_cell.col))continue;
-            next_cell.dir = direction;
-            
 
-            if (current_cell.dir == next_cell.dir) {
-                next_cell.cost = lowestPoints[current_cell.row][current_cell.col][current_cell.dir] + 1;
-            }else if (std::abs(current_cell.dir - next_cell.dir ) == 2){
-                next_cell.cost = lowestPoints[current_cell.row][current_cell.col][current_cell.dir] + 2001;
-            } else {
-                next_cell.cost = lowestPoints[current_cell.row][current_cell.col][current_cell.dir] + 1001;
-            }
+            next_cell.dir = direction;
+            int cost_change = find_cost(current_cell.dir, next_cell.dir);
+            next_cell.cost = lowestPoints[current_cell.row][current_cell.col][current_cell.dir] + cost_change;
 
             if (next_cell.cost < lowestPoints[next_cell.row][next_cell.col][next_cell.dir]) {
                 lowestPoints[next_cell.row][next_cell.col][next_cell.dir] = next_cell.cost;
@@ -88,41 +84,45 @@ int Maze::search_for_shortest_path() {
 
     }
 
-    int tmp = INT_MAX;
+    int minCost = INT_MAX;
     for (int dir = 0; dir < 4; dir++) {
-        if (lowestPoints[target_cell.row][target_cell.col][dir] < tmp) {
-            tmp = lowestPoints[target_cell.row][target_cell.col][dir];
+        if (lowestPoints[target_cell.row][target_cell.col][dir] < minCost) {
+            minCost = lowestPoints[target_cell.row][target_cell.col][dir];
         }
     }
     pointsValues = lowestPoints;
-    return tmp;
+    return minCost;
 }
 
-int Maze::analyze_shortest_paths() {
+int Maze::find_best_sits() {
 
-    int d_col[] = {0, -1, 0, 1}; // up, right, down, left
-    int d_row[] = {1, 0, -1, 0}; 
+    int cnt = 0;
+
     std::vector<std::vector<bool>> visited(maze_size, std::vector<bool>(maze_size, false));
     std::stack<std::pair<int,int>> toVisit;
+    int first_row;
+    int first_col;
+    int second_row;
+    int second_col;
+    int new_row;
+    int new_col;
+    int tmp_points;
+    int direction;
+    int direction_val;
 
-    
     toVisit.push({target_cell.row,target_cell.col});
 
     while (!toVisit.empty()){
-        std::pair<int,int> getValues = toVisit.top();
+        std::pair<int,int> current_cell = toVisit.top();
         toVisit.pop();
-        int first_row = getValues.first;
-        int first_col = getValues.second;
-        int new_row;
-        int new_col;
-        
-        int tmp_points;
 
+        first_row = current_cell.first;
+        first_col = current_cell.second;
+        
         visited[first_row][first_col] = true;
-        int second_row;
-        int second_col;
-        int direction;
-        int direction_val = INT_MAX;
+        cnt++;
+
+        direction_val = INT_MAX;
     
         for (int dir = 0; dir < 4; dir++) {
             if (pointsValues[first_row][first_col][dir] < direction_val) {
@@ -132,21 +132,24 @@ int Maze::analyze_shortest_paths() {
         }
         second_row = first_row;
         second_col = first_col;
-        first_row = second_row + d_row[direction];
-        first_col = second_col + d_col[direction];
+        first_row = second_row - D_ROW[direction];
+        first_col = second_col - D_COL[direction];
         visited[first_row][first_col] = true;
+        cnt++;
 
         while (pointsValues[first_row][first_col][1] != 0) {
             for (int dir = 0; dir < 4; dir++) {
-                new_row = first_row + d_row[dir];
-                new_col = first_col + d_col[dir];
+                new_row = first_row - D_ROW[dir];
+                new_col = first_col - D_COL[dir];
                 if(!can_move_to(new_row,new_col))continue;
                 tmp_points = INT_MAX;
+
                 if (second_row == new_row || second_col == new_col) {
                     tmp_points = pointsValues[first_row][first_col][dir];
                 }else {
                     tmp_points = pointsValues[first_row][first_col][dir] + 1000;
                 }
+
                 if (tmp_points < direction_val) {
                     direction_val = tmp_points;
                     direction = dir;
@@ -156,22 +159,16 @@ int Maze::analyze_shortest_paths() {
             }
             second_row = first_row;
             second_col = first_col;
-            first_row = second_row + d_row[direction];
-            first_col = second_col + d_col[direction];
+            first_row = second_row - D_ROW[direction];
+            first_col = second_col - D_COL[direction];
 
             if (visited[first_row][first_col])break;
 
             visited[first_row][first_col] = true;
+            cnt++;
             
         }
     }
-    int cnt = 0;
-    for (int row = 0; row < visited.size(); row++){
-        for (int col = 0; col <visited[row].size(); col++){
-            if(visited[row][col] == true){
-                cnt++;
-            }
-        }
-    }
+
     return cnt;
 }
