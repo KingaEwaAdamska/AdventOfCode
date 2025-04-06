@@ -1,0 +1,3 @@
+/home/visenna/Documents/AdventOfCode/2024/day16_refactor/build/CMakeFiles/ReindeerMaze.dir
+/home/visenna/Documents/AdventOfCode/2024/day16_refactor/build/CMakeFiles/edit_cache.dir
+/home/visenna/Documents/AdventOfCode/2024/day16_refactor/build/CMakeFiles/rebuild_cache.dir
