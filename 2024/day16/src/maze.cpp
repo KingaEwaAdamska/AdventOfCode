@@ -16,13 +16,14 @@ void Maze::fill_maze() {
     std::getline(std::cin, line);  // Read first line
     maze_size = line.size();
 
-    maze.resize(maze_size);
+    maze.resize(maze_size, std::vector<char>(maze_size));
+
     for (int i = 0; i < maze_size; i++) {
-        maze[i].resize(maze_size);
         maze[0][i] = '#';
+        maze[maze_size-1][i] = '#';
     }
 
-    for (int row = 1; row < maze_size; row++) {
+    for (int row = 1; row < maze_size - 1; row++) {
         std::getline(std::cin, line);
         for (int col = 0; col < maze_size; col++) {
             maze[row][col] = line[col];
